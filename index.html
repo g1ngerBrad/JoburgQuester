@@ -261,6 +261,19 @@
     <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
       Get a free key from <span class="text-emerald-400">console.groq.com/keys</span>. Using model <span class="text-slate-300">llama-3.3-70b-versatile</span>.
     </p>
+
+    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Max Distance from Location</label>
+    <select id="maxDistanceInput" class="field mb-2">
+      <option value="5">Within 5 km</option>
+      <option value="10">Within 10 km</option>
+      <option value="25">Within 25 km</option>
+      <option value="50">Within 50 km</option>
+      <option value="100">Within 100 km</option>
+      <option value="250">Within 250 km</option>
+    </select>
+    <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
+      Quests will be limited to this radius from Bryanston. The AI also avoids high-risk areas regardless of distance.
+    </p>
     <div class="flex gap-2">
       <button id="closeSettingsBtn" class="btn-ghost flex-1">Cancel</button>
       <button id="saveKeyBtn" class="btn-primary flex-1">Save</button>
@@ -336,6 +349,8 @@ const COST_META = {
   'Free':  { color: '#34d399', bg: 'rgba(16,185,129,0.14)' },
   'Cheap': { color: '#38bdf8', bg: 'rgba(14,165,233,0.14)' }
 };
+const DISTANCE_OPTIONS = [5, 10, 25, 50, 100, 250];
+const DEFAULT_MAX_DISTANCE = 25;
 const LOADING_MESSAGES = [
   'Scouting Joburg…',
   'Asking the locals…',
@@ -355,14 +370,15 @@ function loadState() {
       apiKey: parsed.apiKey || '',
       activeQuest: parsed.activeQuest || null,
       questHistory: Array.isArray(parsed.questHistory) ? parsed.questHistory : [],
-      categoryWeights: parsed.categoryWeights || { ...DEFAULT_WEIGHTS }
+      categoryWeights: parsed.categoryWeights || { ...DEFAULT_WEIGHTS },
+      maxDistance: DISTANCE_OPTIONS.includes(parsed.maxDistance) ? parsed.maxDistance : DEFAULT_MAX_DISTANCE
     };
   } catch (e) {
     return defaultState();
   }
 }
 function defaultState() {
-  return { apiKey: '', activeQuest: null, questHistory: [], categoryWeights: { ...DEFAULT_WEIGHTS } };
+  return { apiKey: '', activeQuest: null, questHistory: [], categoryWeights: { ...DEFAULT_WEIGHTS }, maxDistance: DEFAULT_MAX_DISTANCE };
 }
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -417,13 +433,27 @@ async function generateQuest() {
     .map(q => `"${q.title}"`)
     .join(', ') || 'none yet';
 
+  const maxDistance = state.maxDistance || DEFAULT_MAX_DISTANCE;
+  const radiusGuidance =
+    maxDistance <= 5   ? 'Stay strictly within Bryanston and its immediately adjacent neighbourhoods (Epsom Downs, Riverclub, Magaliessig, Sandown edges).' :
+    maxDistance <= 10  ? 'Stick to the northern suburbs cluster around Bryanston — Sandton, Morningside, Rivonia, Hyde Park, Fourways edges.' :
+    maxDistance <= 25  ? 'Cover the broader northern Joburg arc — Rosebank, Parkhurst, Melville, Dainfern, Lonehill, Sunninghill, Woodmead are all fair game.' :
+    maxDistance <= 50  ? 'You may include outer northern suburbs and reachable areas like Midrand, Lanseria, Muldersdrift, Roodepoort north, and the Cradle of Humankind fringe.' :
+    maxDistance <= 100 ? 'You may include day-trip towns like Pretoria (safe parts — Brooklyn, Menlyn, Hatfield), Hartbeespoort, Magaliesburg, Krugersdorp Game Reserve.' :
+                         'You may include broader Gauteng and North West getaways within a comfortable day-trip — Parys, Suikerbosrand, Pilanesberg fringe, the Vaal.';
+
   const prompt =
-    `You are a local Johannesburg guide. Generate a highly specific, unique, and cheap/free ` +
-    `side-quest for the category: ${targetCategory}. ` +
+    `You are a local Johannesburg guide who knows the city's safety realities intimately. ` +
+    `Generate a highly specific, unique, and cheap/free side-quest for the category: ${targetCategory}. ` +
     `It must be different from these recent quests: ${recent}. ` +
     `Quests should feel authentic to Johannesburg (suburbs, koppies, markets, neighbourhoods). ` +
-    `Return ONLY a raw JSON object with these exact keys: 'title' (short, punchy, max 8 words), ` +
-    `'description' (2-3 sentences, vivid and specific), ` +
+    `\n\nLOCATION: The user is based in Bryanston (northern Johannesburg). The quest location must be within ${maxDistance} km of Bryanston. ${radiusGuidance}` +
+    `\n\nSAFETY (CRITICAL): Johannesburg has real safety concerns and the quest must respect them. ` +
+    `Do NOT suggest: the Johannesburg CBD/inner city after dark, Hillbrow, Berea, Yeoville, Joubert Park, Alexandra township interior, unsupervised hiking on isolated koppies, walking alone in quiet industrial or unlit areas at night, or any location with a known reputation for muggings or hijackings. ` +
+    `Prefer: well-trafficked, well-lit public venues, secure shopping/lifestyle centres, gated parks and nature reserves with entry control (Walter Sisulu, Delta Park, Modderfontein, Klipriviersberg with a group), curated markets (Rosebank Sunday Market, Bryanston Organic Market, Neighbourgoods Braamfontein in daylight), and reputable cultural/dining spots. ` +
+    `If the quest involves anywhere with safety nuance, weave a brief, practical safety note into the description (e.g. "go in daylight", "park inside the secure lot", "go with a friend") — but keep it natural, not preachy. ` +
+    `\n\nReturn ONLY a raw JSON object with these exact keys: 'title' (short, punchy, max 8 words), ` +
+    `'description' (2-3 sentences, vivid and specific, with any safety note woven in naturally), ` +
     `'difficulty' (one of: Simple, Moderate, Complex), ` +
     `'cost' (one of: Free, Cheap). ` +
     `No markdown, no backticks, no commentary. Just raw JSON.`;
@@ -702,11 +732,14 @@ document.getElementById('generateBtn').onclick = generateQuest;
 
 document.getElementById('settingsBtn').onclick = () => {
   document.getElementById('apiKeyInput').value = state.apiKey || '';
+  document.getElementById('maxDistanceInput').value = String(state.maxDistance || DEFAULT_MAX_DISTANCE);
   openModal('settingsModal');
 };
 document.getElementById('closeSettingsBtn').onclick = () => closeModal('settingsModal');
 document.getElementById('saveKeyBtn').onclick = () => {
   state.apiKey = document.getElementById('apiKeyInput').value.trim();
+  const chosen = parseInt(document.getElementById('maxDistanceInput').value, 10);
+  state.maxDistance = DISTANCE_OPTIONS.includes(chosen) ? chosen : DEFAULT_MAX_DISTANCE;
   saveState();
   closeModal('settingsModal');
   hideError();
