@@ -65,6 +65,19 @@ After any change that affects project structure, features, state schema, API int
 
 Do this as part of the same task, not as a separate step.
 
+## Service Worker
+
+`sw.js` is registered from `home.js` and `log.js`. It caches all app shell assets (HTML, CSS, JS, Tailwind CDN) for fast repeat loads on mobile.
+
+**When modifying any cached file** (HTML, CSS, JS), bump the cache version in `sw.js` so users receive fresh files:
+```js
+const CACHE = 'jhb-v2'; // increment each time cached files change
+```
+
+The `PRECACHE` list in `sw.js` mirrors the file map above. If you add or remove files, update that list too.
+
+Groq API calls (`api.groq.com`) are intentionally excluded from caching.
+
 ## Do Not
 
 - Do not introduce a build system or bundler.
