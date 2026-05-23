@@ -1,4 +1,4 @@
-const CACHE = 'jhb-v4';
+const CACHE = 'sq-v6';
 
 const PRECACHE = [
   './pages/home.html',
@@ -6,6 +6,7 @@ const PRECACHE = [
   './styles/globals.css',
   './styles/index.css',
   './styles/log.css',
+  './js/env.js',
   './js/config.js',
   './js/state.js',
   './js/api.js',
