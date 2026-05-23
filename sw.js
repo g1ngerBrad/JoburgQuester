@@ -1,19 +1,19 @@
-const CACHE = 'jhb-v1';
+const CACHE = 'jhb-v2';
 
 const PRECACHE = [
-  '/pages/home.html',
-  '/pages/log.html',
-  '/styles/globals.css',
-  '/styles/index.css',
-  '/styles/log.css',
-  '/js/config.js',
-  '/js/state.js',
-  '/js/api.js',
-  '/js/ui.js',
-  '/js/quests.js',
-  '/js/home.js',
-  '/js/log.js',
-  '/manifest.json',
+  './pages/home.html',
+  './pages/log.html',
+  './styles/globals.css',
+  './styles/index.css',
+  './styles/log.css',
+  './js/config.js',
+  './js/state.js',
+  './js/api.js',
+  './js/ui.js',
+  './js/quests.js',
+  './js/home.js',
+  './js/log.js',
+  './manifest.json',
 ];
 
 self.addEventListener('install', e =>

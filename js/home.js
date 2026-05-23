@@ -24,4 +24,4 @@ renderQuestCard();
 const _splash = document.getElementById('splash');
 if (_splash) { _splash.classList.add('out'); setTimeout(() => _splash.remove(), 400); }
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js');
