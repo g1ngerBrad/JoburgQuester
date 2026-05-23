@@ -30,10 +30,12 @@ const COST_META = {
 const DISTANCE_OPTIONS = [5, 10, 25, 50, 100, 250];
 const DEFAULT_MAX_DISTANCE = 25;
 
+const DEFAULT_LOCATION = 'Bryanston, Johannesburg';
+
 const LOADING_MESSAGES = [
-  'Scouting Joburg…',
+  'Scouting the area…',
   'Asking the locals…',
-  'Checking the koppies…',
+  'Checking the map…',
   'Tuning into the city…',
   'Brewing something fresh…'
 ];
