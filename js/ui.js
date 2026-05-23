@@ -20,7 +20,7 @@ function renderQuestCard() {
   hint.classList.add('hidden');
   const cat = CATEGORY_META[q.category] || CATEGORY_META['Urban Explorer'];
   const diff = DIFFICULTY_META[q.difficulty] || DIFFICULTY_META['Simple'];
-  const cost = COST_META[q.cost] || COST_META['Free'];
+  const cost = q.cost === 'Free' ? COST_META['Free'] : (COST_META[q.cost] || COST_META['Cheap']);
 
   card.className = 'fade-up rounded-2xl p-5 border border-slate-700/60 relative overflow-hidden';
   card.style.background = 'linear-gradient(155deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%)';
@@ -33,8 +33,13 @@ function renderQuestCard() {
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <h3 class="text-[19px] font-bold leading-tight mb-2 ${q.completed ? 'strike-line text-slate-400' : ''}">${escapeHtml(q.title)}</h3>
-      <p class="text-[14px] text-slate-300 leading-relaxed mb-4 ${q.completed ? 'opacity-60' : ''}">${escapeHtml(q.description)}</p>
+      <h3 class="text-[19px] font-bold leading-tight mb-3 ${q.completed ? 'strike-line text-slate-400' : ''}">${escapeHtml(q.title)}</h3>
+      ${q.objective ? `<div class="mb-3 px-3 py-2.5 rounded-xl border border-slate-600/50" style="background:rgba(30,41,59,0.7)">
+        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-1">Mission</p>
+        <p class="text-[13px] text-slate-200 leading-snug">${escapeHtml(q.objective)}</p>
+      </div>` : ''}
+      <p class="text-[14px] text-slate-300 leading-relaxed mb-3 ${q.completed ? 'opacity-60' : ''}">${escapeHtml(q.description)}</p>
+      ${q.best_time ? `<p class="text-[12px] text-slate-500 mb-3">⏱ ${escapeHtml(q.best_time)}</p>` : ''}
       <div class="flex items-center gap-2 mb-4">
         ${badge(q.difficulty, diff)}
         ${badge(q.cost, cost)}
@@ -81,7 +86,7 @@ function renderLog() {
             ${q.custom ? `<span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-700/60 text-slate-400">Custom</span>` : ''}
           </div>
           <p class="text-[14px] font-semibold leading-snug ${q.completed ? 'strike-line text-slate-400' : 'text-slate-100'}">${escapeHtml(q.title)}</p>
-          <p class="text-[12px] text-slate-400 leading-snug mt-0.5 line-clamp-2 ${q.completed ? 'opacity-60' : ''}">${escapeHtml(q.description)}</p>
+          <p class="text-[12px] text-slate-400 leading-snug mt-0.5 line-clamp-2 ${q.completed ? 'opacity-60' : ''}">${escapeHtml(q.objective || q.description)}</p>
           <div class="flex items-center gap-1.5 mt-2">
             <span class="text-[10px] text-slate-500">${q.difficulty} · ${q.cost}</span>
           </div>
