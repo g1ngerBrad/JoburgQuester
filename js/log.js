@@ -23,4 +23,18 @@ document.getElementById('customModal').addEventListener('click', (e) => {
   if (e.target.id === 'customModal') closeModal('customModal');
 });
 
+document.getElementById('weightsInfoBtn').onclick = () => {
+  renderWeightsPanel();
+  openModal('weightsModal');
+};
+document.getElementById('closeWeightsBtn').onclick = () => closeModal('weightsModal');
+document.getElementById('weightsModal').addEventListener('click', (e) => {
+  if (e.target.id === 'weightsModal') closeModal('weightsModal');
+});
+
+document.getElementById('resetWeightsBtn').onclick = () => {
+  resetWeights();
+  renderLog();
+};
+
 renderLog();

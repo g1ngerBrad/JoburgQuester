@@ -41,7 +41,7 @@ function renderQuestCard() {
       </div>
       <button data-action="toggle-active" class="${q.completed ? 'btn-ghost' : 'btn-primary'} w-full flex items-center justify-center gap-2">
         ${q.completed
-          ? `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 4 3 10 9 10"/></svg> Undo Complete`
+          ? `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg> Undo Complete`
           : `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Mark Complete`}
       </button>
     </div>
@@ -98,6 +98,25 @@ function renderLog() {
   list.querySelectorAll('[data-delete]').forEach(el => {
     el.onclick = () => deleteQuest(el.dataset.delete);
   });
+}
+
+function renderWeightsPanel() {
+  const content = document.getElementById('weightsContent');
+  if (!content) return;
+  content.innerHTML = CATEGORIES.map(cat => {
+    const meta = CATEGORY_META[cat];
+    const pct = Math.round((state.categoryWeights[cat] || 0) * 100);
+    return `
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[13px] font-medium text-slate-200">${meta.emoji} ${cat}</span>
+          <span class="text-[13px] font-semibold tabular-nums" style="color:${meta.color}">${pct}%</span>
+        </div>
+        <div class="w-full h-2 bg-slate-700/60 rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500" style="width:${pct}%;background:${meta.color}"></div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 let loadingInterval = null;
