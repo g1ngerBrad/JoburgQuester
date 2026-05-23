@@ -1,24 +1,21 @@
 function buildRadiusGuidance(maxDistance) {
-  if (maxDistance <= 5)   return 'Stay strictly within Bryanston and its immediately adjacent neighbourhoods (Epsom Downs, Riverclub, Magaliessig, Sandown edges).';
-  if (maxDistance <= 10)  return 'Stick to the northern suburbs cluster around Bryanston — Sandton, Morningside, Rivonia, Hyde Park, Fourways edges.';
-  if (maxDistance <= 25)  return 'Cover the broader northern Joburg arc — Rosebank, Parkhurst, Melville, Dainfern, Lonehill, Sunninghill, Woodmead are all fair game.';
-  if (maxDistance <= 50)  return 'You may include outer northern suburbs and reachable areas like Midrand, Lanseria, Muldersdrift, Roodepoort north, and the Cradle of Humankind fringe.';
-  if (maxDistance <= 100) return 'You may include day-trip towns like Pretoria (safe parts — Brooklyn, Menlyn, Hatfield), Hartbeespoort, Magaliesburg, Krugersdorp Game Reserve.';
-  return 'You may include broader Gauteng and North West getaways within a comfortable day-trip — Parys, Suikerbosrand, Pilanesberg fringe, the Vaal.';
+  if (maxDistance <= 5)   return 'Stay strictly within the immediate area — same suburb or the directly adjacent streets.';
+  if (maxDistance <= 10)  return 'Stick to the cluster of suburbs within a short walk or very brief drive.';
+  if (maxDistance <= 25)  return 'Cover the broader local area within a comfortable short drive.';
+  if (maxDistance <= 50)  return 'You may include outer suburbs and nearby towns reachable in under an hour.';
+  if (maxDistance <= 100) return 'You may include day-trip destinations within roughly an hour\'s drive.';
+  return 'You may include broader regional getaways within a comfortable day-trip distance.';
 }
 
-function buildPrompt(targetCategory, maxDistance, recent) {
+function buildPrompt(targetCategory, maxDistance, recent, location) {
   const radiusGuidance = buildRadiusGuidance(maxDistance);
   return (
-    `You are a local Johannesburg guide who knows the city's safety realities intimately. ` +
+    `You are a knowledgeable local guide for ${location}. ` +
     `Generate a highly specific, unique, and cheap/free side-quest for the category: ${targetCategory}. ` +
     `It must be different from these recent quests: ${recent}. ` +
-    `Quests should feel authentic to Johannesburg (suburbs, koppies, markets, neighbourhoods). ` +
-    `\n\nLOCATION: The user is based in Bryanston (northern Johannesburg). The quest location must be within ${maxDistance} km of Bryanston. ${radiusGuidance}` +
-    `\n\nSAFETY (CRITICAL): Johannesburg has real safety concerns and the quest must respect them. ` +
-    `Do NOT suggest: the Johannesburg CBD/inner city after dark, Hillbrow, Berea, Yeoville, Joubert Park, Alexandra township interior, unsupervised hiking on isolated koppies, walking alone in quiet industrial or unlit areas at night, or any location with a known reputation for muggings or hijackings. ` +
-    `Prefer: well-trafficked, well-lit public venues, secure shopping/lifestyle centres, gated parks and nature reserves with entry control (Walter Sisulu, Delta Park, Modderfontein, Klipriviersberg with a group), curated markets (Rosebank Sunday Market, Bryanston Organic Market, Neighbourgoods Braamfontein in daylight), and reputable cultural/dining spots. ` +
-    `If the quest involves anywhere with safety nuance, weave a brief, practical safety note into the description (e.g. "go in daylight", "park inside the secure lot", "go with a friend") — but keep it natural, not preachy. ` +
+    `Quests should feel authentic to the local area — name specific venues, neighbourhoods, landmarks, markets, parks, or cultural spots that actually exist there. ` +
+    `\n\nLOCATION: The user is based in ${location}. The quest location must be within ${maxDistance} km of that point. ${radiusGuidance}` +
+    `\n\nSAFETY: Apply your knowledge of local safety realities for ${location}. Prefer well-trafficked, reputable venues, parks with good foot traffic, secure public spaces, and established cultural or dining spots. Avoid locations with a known reputation for serious safety concerns. If the quest involves anywhere with a safety nuance, weave a brief, practical note into the description naturally (e.g. "go in daylight", "visit with a friend") — not preachy. ` +
     `\n\nReturn ONLY a raw JSON object with these exact keys: 'title' (short, punchy, max 8 words), ` +
     `'description' (2-3 sentences, vivid and specific, with any safety note woven in naturally), ` +
     `'difficulty' (one of: Simple, Moderate, Complex), ` +
@@ -42,7 +39,8 @@ async function generateQuest() {
     .join(', ') || 'none yet';
 
   const maxDistance = state.maxDistance || DEFAULT_MAX_DISTANCE;
-  const prompt = buildPrompt(targetCategory, maxDistance, recent);
+  const location = state.location || DEFAULT_LOCATION;
+  const prompt = buildPrompt(targetCategory, maxDistance, recent, location);
 
   setLoading(true);
   cycleLoadingText();
