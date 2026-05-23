@@ -24,3 +24,6 @@ document.getElementById('customModal').addEventListener('click', (e) => {
 });
 
 renderLog();
+
+const _splash = document.getElementById('splash');
+if (_splash) { _splash.classList.add('out'); setTimeout(() => _splash.remove(), 400); }

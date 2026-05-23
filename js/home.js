@@ -20,3 +20,6 @@ document.getElementById('settingsModal').addEventListener('click', (e) => {
 });
 
 renderQuestCard();
+
+const _splash = document.getElementById('splash');
+if (_splash) { _splash.classList.add('out'); setTimeout(() => _splash.remove(), 400); }

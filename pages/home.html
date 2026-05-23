@@ -11,11 +11,23 @@
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" href="../icon-180.png">
 <title>Joburg Side-Quests</title>
+<style>
+  html{background:#0f172a}
+  #splash{position:fixed;inset:0;z-index:9999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .35s ease}
+  #splash.out{opacity:0;pointer-events:none}
+  #splash-title{color:#10b981;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-size:13px;font-weight:600;letter-spacing:.15em;text-transform:uppercase}
+  .sdot{width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;animation:sdot 1.4s ease infinite}
+  .sdot:nth-child(2){animation-delay:.16s}.sdot:nth-child(3){animation-delay:.32s}
+  @keyframes sdot{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+</style>
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="../styles/globals.css">
 <link rel="stylesheet" href="../styles/index.css">
 </head>
 <body class="text-slate-100">
+
+<div id="splash"><p id="splash-title">Side-Quests · JHB</p><div style="display:flex;gap:8px"><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span></div></div>
 
 <!-- ================= MAIN APP ================= -->
 <div id="app" class="min-h-screen flex flex-col">
