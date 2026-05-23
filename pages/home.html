@@ -10,6 +10,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" href="../icon-180.png">
+<link rel="apple-touch-startup-image" href="splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)">
+<link rel="apple-touch-startup-image" href="splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
+<link rel="apple-touch-startup-image" href="splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)">
+<link rel="apple-touch-startup-image" href="splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
 <title>Joburg Side-Quests</title>
 <style>
   html{background:#0f172a}
@@ -32,7 +36,7 @@
 <div id="app" class="min-h-screen flex flex-col">
 
   <!-- HEADER -->
-  <header class="safe-top px-3 pb-3 flex items-center justify-between sticky top-0 bg-slate-900/85 backdrop-blur-md z-20 border-b border-slate-800/60">
+  <header class="safe-top px-3 pb-3 flex items-center justify-between sticky bg-slate-900/85 backdrop-blur-md z-20 border-b border-slate-800/60" style="top:env(safe-area-inset-top)">
     <a href="log.html" id="logBtn" class="icon-btn" aria-label="Quest log">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
     </a>

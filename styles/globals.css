@@ -5,8 +5,13 @@ html, body {
   background: #0f172a;
 }
 
-.safe-top { padding-top: max(env(safe-area-inset-top), 12px); }
-.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 12px); }
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-top { padding-top: 12px; }
+.safe-bottom { padding-bottom: 12px; }
 
 /* Fade in for cards */
 @keyframes fadeUp {
