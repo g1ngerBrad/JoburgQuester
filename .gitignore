@@ -14,5 +14,5 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Claude Code local settings (keep CLAUDE.md but not local overrides)
-.claude/settings.local.json
+# Claude Code directory (CLAUDE.md is tracked at the repo root)
+.claude/
