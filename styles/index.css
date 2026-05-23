@@ -1,0 +1,11 @@
+/* Pulsing rings around generate button */
+@keyframes ring {
+  0%   { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.6);  opacity: 0;   }
+}
+.ring-anim { animation: ring 2.2s cubic-bezier(0.4,0,0.6,1) infinite; }
+.ring-anim-2 { animation: ring 2.2s cubic-bezier(0.4,0,0.6,1) infinite; animation-delay: 1.1s; }
+
+/* Loading spinner */
+@keyframes spin360 { to { transform: rotate(360deg); } }
+.spin { animation: spin360 1s linear infinite; }

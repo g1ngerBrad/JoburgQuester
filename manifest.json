@@ -2,7 +2,7 @@
   "name": "Joburg Side-Quests",
   "short_name": "JHB Quests",
   "description": "AI-generated side-quests to explore Johannesburg one tiny adventure at a time.",
-  "start_url": "./index.html",
+  "start_url": "./pages/home.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
