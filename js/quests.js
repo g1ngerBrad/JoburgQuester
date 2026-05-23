@@ -5,6 +5,9 @@ function toggleComplete(id) {
   if (q.completed && !q.weightCounted) {
     adaptWeights(q.category);
     q.weightCounted = true;
+  } else if (!q.completed && q.weightCounted) {
+    reverseWeights(q.category);
+    q.weightCounted = false;
   }
   if (state.activeQuest && state.activeQuest.id === id) {
     state.activeQuest.completed = q.completed;
@@ -15,6 +18,10 @@ function toggleComplete(id) {
 }
 
 function deleteQuest(id) {
+  const q = state.questHistory.find(x => x.id === id);
+  if (q && q.completed && q.weightCounted) {
+    reverseWeights(q.category);
+  }
   state.questHistory = state.questHistory.filter(x => x.id !== id);
   if (state.activeQuest && state.activeQuest.id === id) {
     state.activeQuest = null;

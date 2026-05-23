@@ -42,20 +42,38 @@ function pickCategory() {
 }
 
 function adaptWeights(category) {
-  const BOOST = 0.15;
-  const MIN = 0.02;
+  const BOOST = 0.03;
+  const DRAIN = 0.01;
+  const MIN = 0.01;
   const w = { ...state.categoryWeights };
   if (!(category in w)) return;
-  w[category] = Math.min(0.94, (w[category] || 0) + BOOST);
-  const others = CATEGORIES.filter(c => c !== category);
-  const othersOldSum = others.reduce((s, k) => s + (w[k] || 0), 0);
-  const othersTarget = Math.max(0.06, 1 - w[category]);
-  if (othersOldSum > 0) {
-    const ratio = othersTarget / othersOldSum;
-    others.forEach(k => { w[k] = Math.max(MIN, (w[k] || 0) * ratio); });
-  }
+  w[category] = Math.min(0.97, (w[category] || 0) + BOOST);
+  CATEGORIES.filter(c => c !== category).forEach(k => {
+    w[k] = Math.max(MIN, (w[k] || 0) - DRAIN);
+  });
   const total = CATEGORIES.reduce((s, k) => s + w[k], 0);
-  CATEGORIES.forEach(k => w[k] = w[k] / total);
+  CATEGORIES.forEach(k => { w[k] = w[k] / total; });
   state.categoryWeights = w;
+  saveState();
+}
+
+function reverseWeights(category) {
+  const BOOST = 0.03;
+  const DRAIN = 0.01;
+  const MIN = 0.01;
+  const w = { ...state.categoryWeights };
+  if (!(category in w)) return;
+  w[category] = Math.max(MIN, (w[category] || 0) - BOOST);
+  CATEGORIES.filter(c => c !== category).forEach(k => {
+    w[k] = Math.min(0.97, (w[k] || 0) + DRAIN);
+  });
+  const total = CATEGORIES.reduce((s, k) => s + w[k], 0);
+  CATEGORIES.forEach(k => { w[k] = w[k] / total; });
+  state.categoryWeights = w;
+  saveState();
+}
+
+function resetWeights() {
+  state.categoryWeights = { ...DEFAULT_WEIGHTS };
   saveState();
 }
