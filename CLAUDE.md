@@ -57,11 +57,15 @@ Mobile-first PWA. Generates AI side-quests for any city via the Groq API. No loc
 }
 ```
 
-Quest shape: `{ id, title, description, category, difficulty, cost, completed, weightCounted, createdAt, custom? }`
+Quest shape: `{ id, title, objective, description, best_time, category, difficulty, cost, completed, weightCounted, createdAt, custom? }`
+
+- `objective`: one-sentence concrete mission (what exactly to find/do); absent on older quests and custom quests
+- `best_time`: ideal condition or time window for the quest; absent on older quests and custom quests
+- `cost`: free-form string — `'Free'` or a ZAR estimate like `'~R50pp'`; older quests may have `'Cheap'`
 
 ## Categories
 
-`In-Home/Chill`, `Urban Explorer`, `Nature & Adventure`, `Culture & History` — defined in `config.js` with emoji, colour, and default weight (0.25 each). Weights clamped to [0.02, 0.94].
+`In-Home/Chill`, `Urban Explorer`, `Nature & Adventure` — defined in `config.js` with emoji, colour, and default weight (~0.33 each). Weights clamped to [0.01, 0.97]. `Culture & History` was removed.
 
 ## Doc Maintenance
 
