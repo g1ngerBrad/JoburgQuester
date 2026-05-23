@@ -1,4 +1,4 @@
-const CACHE = 'jhb-v3';
+const CACHE = 'jhb-v4';
 
 const PRECACHE = [
   './pages/home.html',
@@ -18,6 +18,14 @@ const PRECACHE = [
   './pages/splash-750x1334.png',
   './pages/splash-1242x2208.png',
   './pages/splash-1125x2436.png',
+  './pages/splash-828x1792.png',
+  './pages/splash-1242x2688.png',
+  './pages/splash-1170x2532.png',
+  './pages/splash-1284x2778.png',
+  './pages/splash-1179x2556.png',
+  './pages/splash-1290x2796.png',
+  './pages/splash-1206x2622.png',
+  './pages/splash-1320x2868.png',
 ];
 
 self.addEventListener('install', e =>
