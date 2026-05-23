@@ -1,6 +1,7 @@
 function defaultState() {
   return {
     apiKey: '',
+    location: DEFAULT_LOCATION,
     activeQuest: null,
     questHistory: [],
     categoryWeights: { ...DEFAULT_WEIGHTS },
@@ -15,6 +16,7 @@ function loadState() {
     const parsed = JSON.parse(raw);
     return {
       apiKey: parsed.apiKey || '',
+      location: parsed.location || DEFAULT_LOCATION,
       activeQuest: parsed.activeQuest || null,
       questHistory: Array.isArray(parsed.questHistory) ? parsed.questHistory : [],
       categoryWeights: parsed.categoryWeights || { ...DEFAULT_WEIGHTS },

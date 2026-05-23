@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="JHB Quests">
+<meta name="apple-mobile-web-app-title" content="Quester">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="../manifest.json">
 <link rel="apple-touch-icon" href="../icon-180.png">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-startup-image" href="splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px)  and (-webkit-device-pixel-ratio: 3)">
 <link rel="apple-touch-startup-image" href="splash-1206x2622.png" media="(device-width: 402px) and (device-height: 874px)  and (-webkit-device-pixel-ratio: 3)">
 <link rel="apple-touch-startup-image" href="splash-1320x2868.png" media="(device-width: 440px) and (device-height: 956px)  and (-webkit-device-pixel-ratio: 3)">
-<title>Joburg Side-Quests</title>
+<title>Quester</title>
 <style>
   html{background:#0f172a}
   #splash{position:fixed;inset:0;z-index:9999;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .35s ease}
@@ -38,7 +38,7 @@
 </head>
 <body class="text-slate-100">
 
-<div id="splash"><p id="splash-title">Side-Quests · JHB</p><div style="display:flex;gap:8px"><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span></div></div>
+<div id="splash"><p id="splash-title">Quester</p><div style="display:flex;gap:8px"><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span></div></div>
 
 <!-- ================= MAIN APP ================= -->
 <div id="app" class="min-h-screen flex flex-col">
@@ -50,7 +50,7 @@
     </a>
     <div class="flex items-center gap-2">
       <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-      <h1 class="font-semibold text-[15px] tracking-tight">Side-Quests · JHB</h1>
+      <h1 class="font-semibold text-[15px] tracking-tight">Quester</h1>
     </div>
     <button id="settingsBtn" class="icon-btn" aria-label="Settings">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -62,7 +62,7 @@
 
     <!-- Greeting -->
     <div class="text-center mb-6">
-      <p class="text-xs uppercase tracking-[0.18em] text-emerald-400/80 font-medium">Discover Jozi</p>
+      <p id="discoverTagline" class="text-xs uppercase tracking-[0.18em] text-emerald-400/80 font-medium">Discover your city</p>
       <h2 class="text-[22px] font-bold mt-1 tracking-tight">What will today bring?</h2>
     </div>
 
@@ -85,7 +85,7 @@
         <svg class="spin text-emerald-400" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
           <path d="M21 12a9 9 0 1 1-6.219-8.56" />
         </svg>
-        <p id="loadingText" class="text-sm font-medium text-slate-200">Scouting Joburg…</p>
+        <p id="loadingText" class="text-sm font-medium text-slate-200">Scouting the area…</p>
       </div>
       <div class="space-y-2">
         <div class="h-3 bg-slate-700/60 rounded-full w-3/4"></div>
@@ -107,7 +107,7 @@
 
     <!-- Empty hint -->
     <div id="emptyHint" class="text-center text-slate-500 text-sm mt-2">
-      Tap to discover something new in the city.
+      Tap to discover something new nearby.
     </div>
 
   </main>
@@ -119,11 +119,20 @@
   <div class="slide-up w-full bg-slate-800 rounded-t-3xl sm:rounded-3xl p-5 safe-bottom">
     <div class="w-10 h-1 bg-slate-600 rounded-full mx-auto mb-4"></div>
     <h3 class="text-lg font-semibold mb-1">Settings</h3>
-    <p class="text-xs text-slate-400 mb-4">Stored locally on your device. Never sent anywhere except the API.</p>
+    <p class="text-xs text-slate-400 mb-4">Stored locally on your device. Only sent to the Groq and Mapbox APIs.</p>
     <label class="text-xs font-medium text-slate-300 mb-1.5 block">Groq API Key</label>
     <input id="apiKeyInput" type="password" class="field mb-3" placeholder="gsk_...">
     <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
       Get a free key from <span class="text-emerald-400">console.groq.com/keys</span>. Using model <span class="text-slate-300">llama-3.3-70b-versatile</span>.
+    </p>
+
+    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Your Location</label>
+    <div class="relative mb-1">
+      <input id="locationInput" type="text" class="field w-full" placeholder="e.g. Cape Town, South Africa" autocomplete="off" spellcheck="false">
+      <div id="locationSuggestions" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-700 border border-slate-600 rounded-xl overflow-hidden z-50 shadow-xl"></div>
+    </div>
+    <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
+      Your origin point for quest generation. Start typing for place autocomplete (requires Mapbox token set in deployment).
     </p>
 
     <label class="text-xs font-medium text-slate-300 mb-1.5 block">Max Distance from Location</label>
@@ -136,7 +145,7 @@
       <option value="250">Within 250 km</option>
     </select>
     <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
-      Quests will be limited to this radius from Bryanston. The AI also avoids high-risk areas regardless of distance.
+      Quests will be limited to this radius from your location. The AI applies local safety knowledge regardless of distance.
     </p>
     <div class="flex gap-2">
       <button id="closeSettingsBtn" class="btn-ghost flex-1">Cancel</button>
@@ -146,6 +155,7 @@
 </div>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="../js/env.js"></script>
 <script src="../js/config.js"></script>
 <script src="../js/state.js"></script>
 <script src="../js/api.js"></script>

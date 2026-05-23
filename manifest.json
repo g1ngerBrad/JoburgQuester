@@ -1,7 +1,7 @@
 {
-  "name": "Joburg Side-Quests",
-  "short_name": "JHB Quests",
-  "description": "AI-generated side-quests to explore Johannesburg one tiny adventure at a time.",
+  "name": "Quester",
+  "short_name": "Quester",
+  "description": "AI-generated side-quests for exploring your city, one tiny adventure at a time.",
   "start_url": "./pages/home.html",
   "scope": "./",
   "display": "standalone",
