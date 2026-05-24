@@ -1,6 +1,9 @@
 let selectedCategories = []; // empty = random from all
+let selectedGroupSize = 'solo';
 
-document.getElementById('generateBtn').onclick = () => generateQuest(selectedCategories.slice());
+document.getElementById('generateBtn').onclick = () => generateQuest(selectedCategories.slice(), selectedGroupSize);
+
+document.getElementById('groupSizeSelect').onchange = (e) => { selectedGroupSize = e.target.value; };
 
 document.getElementById('settingsBtn').onclick = () => {
   document.getElementById('apiKeyInput').value = state.apiKey || '';
@@ -36,10 +39,12 @@ document.getElementById('settingsModal').addEventListener('click', (e) => {
 function _renderCategoryGrid() {
   const grid = document.getElementById('catGrid');
   if (!grid) return;
+  const total = CATEGORIES.length;
 
-  grid.innerHTML = CATEGORIES.map(cat => {
+  grid.innerHTML = CATEGORIES.map((cat, i) => {
     const m = CATEGORY_META[cat];
-    return `<button class="cat-check-btn" data-cat="${escapeHtml(cat)}">${m.emoji} ${escapeHtml(m.label || cat)}</button>`;
+    const lone = (total % 3 !== 0) && (i === total - 1);
+    return `<button class="cat-check-btn${lone ? ' col-span-3' : ''}" data-cat="${escapeHtml(cat)}">${m.emoji} ${escapeHtml(m.label || cat)}</button>`;
   }).join('');
 
   grid.querySelectorAll('.cat-check-btn').forEach(btn => {
@@ -107,6 +112,43 @@ function _renderLocationSuggestions(features) {
     };
   });
 }
+
+// --- Current location ---
+
+document.getElementById('useCurrentLocationBtn').onclick = async () => {
+  const btn = document.getElementById('useCurrentLocationBtn');
+  if (!navigator.geolocation) return;
+  btn.disabled = true;
+  btn.style.color = '#10b981';
+  try {
+    const pos = await new Promise((resolve, reject) =>
+      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 8000 })
+    );
+    const { latitude: lat, longitude: lng } = pos.coords;
+    const input = document.getElementById('locationInput');
+
+    if (MAPBOX_TOKEN) {
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_TOKEN}&types=neighborhood,locality,place&limit=1`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        const name = data.features?.[0]?.place_name;
+        if (name) { input.value = name; btn.disabled = false; btn.style.color = ''; return; }
+      }
+    }
+
+    // Fallback: OpenStreetMap Nominatim
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=14`);
+    if (res.ok) {
+      const data = await res.json();
+      const a = data.address || {};
+      const parts = [a.suburb || a.neighbourhood || a.village || a.town, a.city || a.county, a.country].filter(Boolean);
+      if (parts.length) { input.value = parts.join(', '); }
+    }
+  } catch (_) {}
+  btn.disabled = false;
+  btn.style.color = '';
+};
 
 function _updateCityTagline() {
   const el = document.getElementById('discoverTagline');
