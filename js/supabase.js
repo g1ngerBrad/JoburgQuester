@@ -57,12 +57,15 @@ async function authSignUp(email, password, username, name) {
   const { data, error } = await db.auth.signUp({ email, password });
   if (error) throw error;
   const userId = data.user?.id;
-  if (!userId) throw new Error('Sign-up failed — no user returned.');
+  if (!userId) throw new Error('This email may already be registered — try signing in instead.');
   const { error: pErr } = await db.from('jq_profiles').insert({ id: userId, username, name });
   if (pErr) throw pErr;
-  const profile = { id: userId, email, username, name, avatar_url: null };
-  setAuthUser(profile);
-  return profile;
+  if (data.session) {
+    const profile = { id: userId, email, username, name, avatar_url: null };
+    setAuthUser(profile);
+    return profile;
+  }
+  return { pendingConfirmation: true, email };
 }
 
 async function authSignIn(email, password) {
