@@ -6,37 +6,66 @@
 
 ## Project Summary
 
-Mobile-first PWA. Generates AI side-quests for any city via the Groq API. No local build step — vanilla JS + Tailwind CSS via CDN. All state in `localStorage` (`jhbsq_v1`). Deployed to Vercel with a build step that injects `MAPBOX_TOKEN` into `js/env.js`.
+Mobile-first PWA. Generates AI side-quests for any city via the Groq API. No local build step — vanilla JS + Tailwind CSS via CDN. All local state in `localStorage` (`jhbsq_v1`). Social features (gems, shared quests, comments, friends) use Supabase. Deployed to Vercel with a build step that injects `MAPBOX_TOKEN`, `SUPABASE_URL`, and `SUPABASE_ANON_KEY` into `js/env.js`.
 
 ## File Map
 
 | File | Role |
 |---|---|
-| `js/env.js` | Generated at Vercel build time; exposes `MAPBOX_TOKEN` global (committed as empty placeholder) |
+| `js/env.js` | Generated at Vercel build time; exposes `MAPBOX_TOKEN`, `SUPABASE_URL`, `SUPABASE_ANON_KEY` globals |
 | `js/config.js` | Category definitions, weights, constants, `DEFAULT_LOCATION` |
 | `js/state.js` | Load/save localStorage state, `adaptWeights()` |
 | `js/api.js` | `generateQuest()`, `buildPrompt()`, Groq fetch |
 | `js/quests.js` | `addCustomQuest()`, `deleteQuest()`, `toggleComplete()` |
 | `js/ui.js` | All DOM rendering — cards, modals, log entries |
-| `js/home.js` | Home page event listeners, location autocomplete, city tagline update |
+| `js/supabase.js` | Supabase client (`getDb()`), auth (`authSignIn/Up/Out`, `refreshSession`), `uploadPhoto()`, `compressImage()`, `haversineKm()`, `getBrowserCoords()` |
+| `js/home.js` | Quest generator page — category grid, tagline, service worker registration |
 | `js/log.js` | Log page event listeners only |
-| `scripts/inject-env.js` | Node script run by Vercel build: writes `MAPBOX_TOKEN` env var into `js/env.js` |
-| `pages/home.html` | Quest generation view |
+| `js/gems.js` | Local Gems page — AI gem generation, Mine/Found tabs, add/delete gems |
+| `js/social.js` | Social page — feed, share modal, comments modal |
+| `js/settings-page.js` | Settings page — auth (sign in/up/out), profile edit, avatar upload, friends, app settings, location autocomplete |
+| `scripts/inject-env.js` | Node script run by Vercel build: writes `MAPBOX_TOKEN`, `SUPABASE_URL`, `SUPABASE_ANON_KEY` into `js/env.js` |
+| `pages/home.html` | Quest generation view (center tab) |
 | `pages/log.html` | Quest history + custom quest modal |
-| `styles/globals.css` | Shared styles, animations |
+| `pages/gems.html` | Local Gems page (left nav tab) — AI gem generation + Mine/Found tabs |
+| `pages/social.html` | Social feed + share/comments (right nav tab) |
+| `pages/settings.html` | Settings page — profile, friends, app settings |
+| `styles/globals.css` | Shared styles, animations, bottom navbar (`.bottom-nav`, `.nav-tab`, `.nav-center`, `.nav-generate-btn`, `.page-tab-bar`, `.page-tab`) |
 | `styles/index.css` | Home-page ring animations |
 | `styles/log.css` | Log-page custom checkbox |
 | `vercel.json` | Vercel build config (`buildCommand`, `outputDirectory`) |
 
+## Navigation
+
+Five pages accessible via:
+- **Bottom navbar** (on home, gems, social, log): Gems (left) | Generate/+ button (center, elevated FAB) | Social (right)
+- **Log**: accessed from home header (list icon, top left)
+- **Settings**: accessed from home/gems/social header (gear/person icon, top right)
+
+The settings page has no bottom navbar (secondary page). Log has the bottom navbar but no active tab highlighted.
+
 ## Key Patterns
 
-- **Rendering**: `ui.js` owns all DOM writes. Page files (`home.js`, `log.js`) wire events and call into `ui.js`, `quests.js`, `api.js`.
+- **Rendering**: `ui.js` owns all DOM writes. Page files wire events and call into `ui.js`, `quests.js`, `api.js`.
 - **State**: Always mutate via `state.js` functions, then call `saveState()`. Never write to localStorage directly.
+- **Auth state**: Stored in `localStorage` under `jhbsq_user` key. `getAuthUser()` / `setAuthUser()` in `supabase.js`. Also call `refreshSession()` on page load to re-validate Supabase session.
 - **Adaptive weights**: `adaptWeights(category)` in `state.js` — called by `toggleComplete()` when marking a quest done.
-- **Prompt building**: `buildPrompt(category, maxDistance, recent, location)` in `api.js`. Per-category rules live in `buildCategoryRule(category)`. Safety rules, karaoke ban, and variety mandate are all prompt-side. Location is city-agnostic.
-- **Category selector**: `#catPills` strip in `home.html`, rendered dynamically by `_renderCategoryPills()` in `home.js`. Active category stored in module-scoped `selectedCategory` (null = random). Passed as `categoryOverride` to `generateQuest()`.
-- **Mapbox token**: Exposed as the global `MAPBOX_TOKEN` from `js/env.js`. Set via the `MAPBOX_TOKEN` Vercel environment variable. For local dev, edit `js/env.js` manually (do not commit). In settings modal, autocomplete is silently disabled when `MAPBOX_TOKEN` is an empty string.
-- **City tagline**: `_updateCityTagline()` in `home.js` sets `#discoverTagline` to the first segment of `state.location` (before the first comma).
+- **Prompt building**: `buildPrompt(category, maxDistance, recent, location)` in `api.js`. Per-category rules live in `buildCategoryRule(category)`.
+- **Mapbox token / Supabase config**: Exposed as globals from `js/env.js`. Set via Vercel environment variables. For local dev, edit `js/env.js` manually (do not commit). Location autocomplete is silently disabled when `MAPBOX_TOKEN` is empty. Supabase features degrade gracefully when `SUPABASE_URL`/`SUPABASE_ANON_KEY` are empty.
+- **Photo uploads**: All uploads go through `uploadPhoto(bucket, file, path)` in `supabase.js`. Images are canvas-compressed to max 800px / JPEG 70% before upload. Storage bucket: `quest-photos` (public).
+- **Nearby gems filter**: bounding-box pre-filter via Supabase query (±latDelta/lngDelta), then precise Haversine filter in JS for ≤250km.
+
+## Supabase Tables (prefix: `jq_`)
+
+| Table | Purpose |
+|---|---|
+| `jq_profiles` | User profiles — linked to `auth.users(id)`, stores `username`, `name`, `avatar_url` |
+| `jq_shared_quests` | Publicly shared completed quests — `user_id`, `title`, `description`, `category`, `photo_url` |
+| `jq_comments` | Comments on shared quests — `quest_id`, `user_id`, `text` |
+| `jq_local_gems` | User-submitted local gems — `user_id`, `title`, `description`, `photo_url`, `lat`, `lng` |
+| `jq_friends` | Friend connections — `user_id`, `friend_id`, `status` |
+
+All tables have RLS enabled. See SQL setup instructions for policies.
 
 ## Groq API
 
@@ -58,15 +87,13 @@ Mobile-first PWA. Generates AI side-quests for any city via the Groq API. No loc
 }
 ```
 
-Quest shape: `{ id, title, objective, description, best_time, category, difficulty, cost, completed, weightCounted, createdAt, custom? }`
+Auth user cached separately under `jhbsq_user` — `{ id, email, username, name, avatar_url }`.
 
-- `objective`: one-sentence concrete mission (what exactly to find/do); absent on older quests and custom quests
-- `best_time`: ideal condition or time window for the quest; absent on older quests and custom quests
-- `cost`: free-form string — `'Free'` or a ZAR estimate like `'~R50pp'`; older quests may have `'Cheap'`
+Quest shape: `{ id, title, objective, description, best_time, category, difficulty, cost, completed, weightCounted, createdAt, custom? }`
 
 ## Categories
 
-Ten categories defined in `config.js` with emoji, short UI `label`, colour, bg, and default weight (0.1 each). Weights clamped to [0.01, 0.97].
+Ten categories defined in `config.js`. Weights clamped to [0.01, 0.97].
 
 | Key | Emoji | Label |
 |---|---|---|
@@ -81,35 +108,29 @@ Ten categories defined in `config.js` with emoji, short UI `label`, colour, bg, 
 | `Comfort Zone` | 🧘 | Comfort Zone |
 | `Local Gems` | 💎 | Local Gems |
 
-`Local Gems` is location-bound (requires real place names). It surfaces obscure neighbourhood spots: hole-in-the-wall restaurants, hidden viewpoints, old-school local institutions, unmapped green spaces. The category rule includes a fallback — if the model can't name a genuinely obscure place, it frames the quest as a neighbourhood hunt with search criteria instead.
-
-`Culture & History` was removed in a prior update.
+`Local Gems` is also the AI category for the Gems page generator.
 
 ## Doc Maintenance
 
 After any change that affects project structure, features, state schema, API integration, categories, or patterns:
-- Update **README.md** if the change affects setup, features, file structure, state, or categories (user-facing).
-- Update **CLAUDE.md** if the change affects the file map, key patterns, API details, localStorage schema, or project rules (Claude-facing).
+- Update **README.md** if the change affects setup, features, file structure, state, or categories.
+- Update **CLAUDE.md** if the change affects the file map, key patterns, API details, schema, or project rules.
 
 Do this as part of the same task, not as a separate step.
 
 ## Service Worker
 
-`sw.js` is registered from `home.js` and `log.js`. It caches all app shell assets (HTML, CSS, JS, Tailwind CDN) for fast repeat loads on mobile.
+`sw.js` is registered from `home.js`. Cache version: `sq-v17`. Supabase API calls are excluded from caching in addition to Groq.
 
-**When modifying any cached file** (HTML, CSS, JS), bump the cache version in `sw.js` so users receive fresh files:
+**When modifying any cached file** (HTML, CSS, JS), bump `CACHE` in `sw.js`:
 ```js
-const CACHE = 'sq-v11'; // increment each time cached files change
+const CACHE = 'sq-v17'; // increment each time cached files change
 ```
-
-The `PRECACHE` list in `sw.js` mirrors the file map above. If you add or remove files, update that list too. `js/env.js` is in PRECACHE — bump the cache version whenever the Mapbox token changes on Vercel.
-
-Groq and Mapbox API calls are intentionally excluded from caching.
 
 ## Do Not
 
 - Do not introduce a build system or bundler beyond the single `scripts/inject-env.js` step.
-- Do not add a backend — this is intentionally a static/client-only app.
-- Do not store the API key anywhere except `localStorage`.
-- Do not store the Mapbox token in `localStorage` or the settings UI — it lives in `js/env.js` via the Vercel env var.
+- Do not add a backend — this is intentionally a static/client-only app (Supabase is BaaS, not a custom backend).
+- Do not store the Groq API key anywhere except `localStorage`.
+- Do not store `MAPBOX_TOKEN`, `SUPABASE_URL`, or `SUPABASE_ANON_KEY` in `localStorage` — they live in `js/env.js` via Vercel env vars.
 - Do not push to GitHub without explicit per-session instruction.

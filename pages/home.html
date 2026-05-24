@@ -52,13 +52,13 @@
       <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
       <h1 class="font-semibold text-[15px] tracking-tight">Quester</h1>
     </div>
-    <button id="settingsBtn" class="icon-btn" aria-label="Settings">
+    <a href="settings.html" id="settingsBtn" class="icon-btn" aria-label="Settings">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    </button>
+    </a>
   </header>
 
   <!-- MAIN VIEW -->
-  <main id="mainView" class="flex-1 px-4 pt-6 pb-8 flex flex-col">
+  <main id="mainView" class="flex-1 px-4 pt-6 pb-32 flex flex-col">
 
     <!-- Greeting -->
     <div class="text-center mb-6">
@@ -128,7 +128,7 @@
   </main>
 
   <!-- Disclaimer -->
-  <footer class="px-5 pb-6 safe-bottom text-center">
+  <footer class="px-5 pb-2 text-center">
     <p class="text-[11px] text-slate-600 leading-relaxed">
       Quests are AI-generated. Locations, opening hours, and safety conditions may not always be accurate — use your own judgement before heading out.
     </p>
@@ -136,48 +136,24 @@
 
 </div>
 
-<!-- ================= SETTINGS MODAL ================= -->
-<div id="settingsModal" class="hidden fixed inset-0 z-40 bg-black/60 bd-fade flex items-end sm:items-center justify-center">
-  <div class="slide-up w-full bg-slate-800 rounded-t-3xl sm:rounded-3xl p-5 safe-bottom">
-    <div class="w-10 h-1 bg-slate-600 rounded-full mx-auto mb-4"></div>
-    <h3 class="text-lg font-semibold mb-1">Settings</h3>
-    <p class="text-xs text-slate-400 mb-4">Stored locally on your device. Only sent to the Groq and Mapbox APIs.</p>
-    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Groq API Key</label>
-    <input id="apiKeyInput" type="password" class="field mb-3" placeholder="gsk_...">
-    <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
-      Get a free key from <span class="text-emerald-400">console.groq.com/keys</span>. Using model <span class="text-slate-300">llama-3.3-70b-versatile</span>.
-    </p>
-
-    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Your Location</label>
-    <div class="relative mb-1.5">
-      <input id="locationInput" type="text" class="field w-full pr-10" placeholder="e.g. Cape Town, South Africa" autocomplete="off" spellcheck="false">
-      <button id="useCurrentLocationBtn" type="button" title="Use current location" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-400 transition-colors p-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z" opacity=".3"/></svg>
-      </button>
-      <div id="locationSuggestions" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-700 border border-slate-600 rounded-xl overflow-hidden z-50 shadow-xl"></div>
-    </div>
-    <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
-      Your origin point for quest generation. Tap the crosshair to use your current location, or type for autocomplete.
-    </p>
-
-    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Max Distance from Location</label>
-    <select id="maxDistanceInput" class="field mb-2">
-      <option value="5">Within 5 km</option>
-      <option value="10">Within 10 km</option>
-      <option value="25">Within 25 km</option>
-      <option value="50">Within 50 km</option>
-      <option value="100">Within 100 km</option>
-      <option value="250">Within 250 km</option>
-    </select>
-    <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
-      Quests will be limited to this radius from your location. The AI applies local safety knowledge regardless of distance.
-    </p>
-    <div class="flex gap-2">
-      <button id="closeSettingsBtn" class="btn-ghost flex-1">Cancel</button>
-      <button id="saveKeyBtn" class="btn-primary flex-1">Save</button>
-    </div>
+<!-- ================= BOTTOM NAV ================= -->
+<nav class="bottom-nav">
+  <div class="nav-items">
+    <a href="gems.html" class="nav-tab" aria-label="Local Gems">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>
+      <span>Gems</span>
+    </a>
+    <a href="home.html" class="nav-center active" aria-label="Generate Quest">
+      <div class="nav-generate-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </a>
+    <a href="social.html" class="nav-tab" aria-label="Social">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Social</span>
+    </a>
   </div>
-</div>
+</nav>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="../js/env.js"></script>

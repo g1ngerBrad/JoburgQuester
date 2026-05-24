@@ -113,3 +113,94 @@ select.field {
   white-space: nowrap;
 }
 .cat-check-btn:active { opacity: 0.75; }
+
+/* ── Bottom Navigation Bar ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: rgba(15, 23, 42, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(30, 41, 59, 0.8);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-items {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 10px 8px 14px;
+}
+
+.nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 20px;
+  text-decoration: none;
+  color: #475569;
+  transition: color 0.15s;
+  flex: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-tab span { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; }
+.nav-tab svg { transition: transform 0.15s; }
+.nav-tab.active { color: #10b981; }
+.nav-tab:active svg { transform: scale(0.9); }
+
+.nav-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  flex: 1;
+  -webkit-tap-highlight-color: transparent;
+  padding-bottom: 6px;
+}
+
+.nav-generate-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px -6px rgba(16, 185, 129, 0.7), 0 0 0 4px #0f172a;
+  transform: translateY(-14px);
+  transition: transform 0.12s, box-shadow 0.15s;
+}
+.nav-center:active .nav-generate-btn {
+  transform: translateY(-12px) scale(0.94);
+  box-shadow: 0 4px 12px -4px rgba(16, 185, 129, 0.5), 0 0 0 4px #0f172a;
+}
+.nav-center.active .nav-generate-btn {
+  box-shadow: 0 6px 24px -4px rgba(16, 185, 129, 0.9), 0 0 0 4px #0f172a;
+}
+
+/* Tabs (Mine / Found / etc.) */
+.page-tab-bar {
+  display: flex;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+  margin-bottom: 0;
+}
+.page-tab {
+  flex: 1;
+  padding: 12px 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.page-tab.active {
+  color: #10b981;
+  border-bottom-color: #10b981;
+}
