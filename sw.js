@@ -1,8 +1,11 @@
-const CACHE = 'sq-v16';
+const CACHE = 'sq-v19';
 
 const PRECACHE = [
   './pages/home.html',
   './pages/log.html',
+  './pages/gems.html',
+  './pages/social.html',
+  './pages/settings.html',
   './styles/globals.css',
   './styles/index.css',
   './styles/log.css',
@@ -14,6 +17,10 @@ const PRECACHE = [
   './js/quests.js',
   './js/home.js',
   './js/log.js',
+  './js/gems.js',
+  './js/social.js',
+  './js/settings-page.js',
+  './js/supabase.js',
   './manifest.json',
   './pages/splash-640x1136.png',
   './pages/splash-750x1334.png',
@@ -44,7 +51,10 @@ self.addEventListener('activate', e =>
 );
 
 self.addEventListener('fetch', e => {
+  // Never cache API calls or Supabase
   if (e.request.url.includes('api.groq.com')) return;
+  if (e.request.url.includes('supabase.co')) return;
+  if (e.request.url.includes('supabase.io')) return;
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
