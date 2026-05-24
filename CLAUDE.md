@@ -33,7 +33,8 @@ Mobile-first PWA. Generates AI side-quests for any city via the Groq API. No loc
 - **Rendering**: `ui.js` owns all DOM writes. Page files (`home.js`, `log.js`) wire events and call into `ui.js`, `quests.js`, `api.js`.
 - **State**: Always mutate via `state.js` functions, then call `saveState()`. Never write to localStorage directly.
 - **Adaptive weights**: `adaptWeights(category)` in `state.js` — called by `toggleComplete()` when marking a quest done.
-- **Prompt building**: `buildPrompt(category, maxDistance, recent, location)` in `api.js`. Safety rules are embedded in the prompt, not the UI. Location is city-agnostic — the AI applies its own local knowledge.
+- **Prompt building**: `buildPrompt(category, maxDistance, recent, location)` in `api.js`. Per-category rules live in `buildCategoryRule(category)`. Safety rules, karaoke ban, and variety mandate are all prompt-side. Location is city-agnostic.
+- **Category selector**: `#catPills` strip in `home.html`, rendered dynamically by `_renderCategoryPills()` in `home.js`. Active category stored in module-scoped `selectedCategory` (null = random). Passed as `categoryOverride` to `generateQuest()`.
 - **Mapbox token**: Exposed as the global `MAPBOX_TOKEN` from `js/env.js`. Set via the `MAPBOX_TOKEN` Vercel environment variable. For local dev, edit `js/env.js` manually (do not commit). In settings modal, autocomplete is silently disabled when `MAPBOX_TOKEN` is an empty string.
 - **City tagline**: `_updateCityTagline()` in `home.js` sets `#discoverTagline` to the first segment of `state.location` (before the first comma).
 
@@ -65,7 +66,21 @@ Quest shape: `{ id, title, objective, description, best_time, category, difficul
 
 ## Categories
 
-`In-Home/Chill`, `Urban Explorer`, `Nature & Adventure` — defined in `config.js` with emoji, colour, and default weight (~0.33 each). Weights clamped to [0.01, 0.97]. `Culture & History` was removed.
+Nine categories defined in `config.js` with emoji, short UI `label`, colour, bg, and default weight (~0.111 each). Weights clamped to [0.01, 0.97].
+
+| Key | Emoji | Label |
+|---|---|---|
+| `In-Home/Chill` | 🛋️ | Chill |
+| `Urban Explorer` | 🏙️ | Urban |
+| `Nature & Adventure` | 🌿 | Nature |
+| `Skills & Craft` | 🛠️ | Skills |
+| `Physical Challenges` | 🏃 | Challenges |
+| `Exploration & Navigation` | 🗺️ | Exploration |
+| `Social Experiments` | 🗣️ | Social |
+| `Creative & Media` | 🎨 | Creativity |
+| `Comfort Zone` | 🧘 | Comfort Zone |
+
+`Culture & History` was removed in a prior update.
 
 ## Doc Maintenance
 
@@ -81,7 +96,7 @@ Do this as part of the same task, not as a separate step.
 
 **When modifying any cached file** (HTML, CSS, JS), bump the cache version in `sw.js` so users receive fresh files:
 ```js
-const CACHE = 'sq-v6'; // increment each time cached files change
+const CACHE = 'sq-v11'; // increment each time cached files change
 ```
 
 The `PRECACHE` list in `sw.js` mirrors the file map above. If you add or remove files, update that list too. `js/env.js` is in PRECACHE — bump the cache version whenever the Mapbox token changes on Vercel.
