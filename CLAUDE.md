@@ -66,7 +66,7 @@ Quest shape: `{ id, title, objective, description, best_time, category, difficul
 
 ## Categories
 
-Nine categories defined in `config.js` with emoji, short UI `label`, colour, bg, and default weight (~0.111 each). Weights clamped to [0.01, 0.97].
+Ten categories defined in `config.js` with emoji, short UI `label`, colour, bg, and default weight (0.1 each). Weights clamped to [0.01, 0.97].
 
 | Key | Emoji | Label |
 |---|---|---|
@@ -79,6 +79,9 @@ Nine categories defined in `config.js` with emoji, short UI `label`, colour, bg,
 | `Social Experiments` | 🗣️ | Social |
 | `Creative & Media` | 🎨 | Creativity |
 | `Comfort Zone` | 🧘 | Comfort Zone |
+| `Local Gems` | 💎 | Local Gems |
+
+`Local Gems` is location-bound (requires real place names). It surfaces obscure neighbourhood spots: hole-in-the-wall restaurants, hidden viewpoints, old-school local institutions, unmapped green spaces. The category rule includes a fallback — if the model can't name a genuinely obscure place, it frames the quest as a neighbourhood hunt with search criteria instead.
 
 `Culture & History` was removed in a prior update.
 
