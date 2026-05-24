@@ -7,7 +7,7 @@ A mobile-first PWA that generates AI-powered side-quests for exploring any city.
 - **AI quest generation** via Groq (`llama-3.3-70b-versatile`) with structured JSON output
 - **Any city** — set any neighbourhood, suburb, or city as your origin point
 - **Mapbox place autocomplete** — live place search when a Mapbox token is configured (set as an environment variable, see below)
-- **9 quest categories** with a home-screen pill selector — tap to lock a category or leave it on Random
+- **10 quest categories** with a home-screen pill selector — tap to lock a category or leave it on Random
 - **Adaptive category weighting** — completing quests in a category increases its future probability
 - **Quest log** with persistent history, custom quest creation, and completion tracking
 - **Safety-aware prompts** — the AI applies local safety knowledge for your chosen location
@@ -113,8 +113,9 @@ All state is persisted to `localStorage` under the key `jhbsq_v1`:
 | Social Experiments | 🗣️ | Social |
 | Creative & Media | 🎨 | Creativity |
 | Comfort Zone | 🧘 | Comfort Zone |
+| Local Gems | 💎 | Local Gems |
 
-Each category starts at equal weight (~0.111). Weights adapt as you complete quests, clamped to [0.01, 0.97]. The home-screen pill strip lets you override the weighted random pick and lock a specific category for your next quest.
+Each category starts at equal weight (0.1). Weights adapt as you complete quests, clamped to [0.01, 0.97]. The home-screen pill strip lets you override the weighted random pick and lock a specific category for your next quest.
 
 ## Dependencies
 

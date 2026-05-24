@@ -9,19 +9,21 @@ const CATEGORIES = [
   'Exploration & Navigation',
   'Social Experiments',
   'Creative & Media',
-  'Comfort Zone'
+  'Comfort Zone',
+  'Local Gems'
 ];
 
 const DEFAULT_WEIGHTS = {
-  'In-Home/Chill':            0.111,
-  'Urban Explorer':           0.111,
-  'Nature & Adventure':       0.111,
-  'Skills & Craft':           0.111,
-  'Physical Challenges':      0.111,
-  'Exploration & Navigation': 0.111,
-  'Social Experiments':       0.111,
-  'Creative & Media':         0.111,
-  'Comfort Zone':             0.112
+  'In-Home/Chill':            0.1,
+  'Urban Explorer':           0.1,
+  'Nature & Adventure':       0.1,
+  'Skills & Craft':           0.1,
+  'Physical Challenges':      0.1,
+  'Exploration & Navigation': 0.1,
+  'Social Experiments':       0.1,
+  'Creative & Media':         0.1,
+  'Comfort Zone':             0.1,
+  'Local Gems':               0.1
 };
 
 const CATEGORY_META = {
@@ -33,7 +35,8 @@ const CATEGORY_META = {
   'Exploration & Navigation': { color: '#8b5cf6', bg: 'rgba(139,92,246,0.14)', emoji: '🗺️', label: 'Exploration' },
   'Social Experiments':       { color: '#ec4899', bg: 'rgba(236,72,153,0.14)', emoji: '🗣️', label: 'Social' },
   'Creative & Media':         { color: '#14b8a6', bg: 'rgba(20,184,166,0.14)', emoji: '🎨', label: 'Creativity' },
-  'Comfort Zone':             { color: '#a78bfa', bg: 'rgba(167,139,250,0.14)',emoji: '🧘', label: 'Comfort Zone' }
+  'Comfort Zone':             { color: '#a78bfa', bg: 'rgba(167,139,250,0.14)', emoji: '🧘', label: 'Comfort Zone' },
+  'Local Gems':               { color: '#22d3ee', bg: 'rgba(34,211,238,0.14)',  emoji: '💎', label: 'Local Gems' }
 };
 
 const DIFFICULTY_META = {

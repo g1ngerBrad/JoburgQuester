@@ -80,8 +80,18 @@
     </div>
 
     <!-- Category filter -->
-    <div class="mb-5">
+    <div class="mb-3">
       <div id="catGrid" class="grid grid-cols-3 gap-1.5"></div>
+    </div>
+
+    <!-- Group size -->
+    <div class="mb-5">
+      <select id="groupSizeSelect" class="field w-full text-sm">
+        <option value="solo">Solo quest</option>
+        <option value="small">2–4 people</option>
+        <option value="medium">5–10 people</option>
+        <option value="large">10+ people</option>
+      </select>
     </div>
 
     <!-- Loading state -->
@@ -139,12 +149,15 @@
     </p>
 
     <label class="text-xs font-medium text-slate-300 mb-1.5 block">Your Location</label>
-    <div class="relative mb-1">
-      <input id="locationInput" type="text" class="field w-full" placeholder="e.g. Cape Town, South Africa" autocomplete="off" spellcheck="false">
+    <div class="relative mb-1.5">
+      <input id="locationInput" type="text" class="field w-full pr-10" placeholder="e.g. Cape Town, South Africa" autocomplete="off" spellcheck="false">
+      <button id="useCurrentLocationBtn" type="button" title="Use current location" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-400 transition-colors p-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z" opacity=".3"/></svg>
+      </button>
       <div id="locationSuggestions" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-700 border border-slate-600 rounded-xl overflow-hidden z-50 shadow-xl"></div>
     </div>
     <p class="text-[11px] text-slate-500 mb-4 leading-relaxed">
-      Your origin point for quest generation. Start typing for place autocomplete (requires Mapbox token set in deployment).
+      Your origin point for quest generation. Tap the crosshair to use your current location, or type for autocomplete.
     </p>
 
     <label class="text-xs font-medium text-slate-300 mb-1.5 block">Max Distance from Location</label>

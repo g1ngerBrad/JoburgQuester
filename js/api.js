@@ -1,5 +1,5 @@
 // Categories that require a real named location; everything else is generic.
-const LOCATION_CATEGORIES = new Set(['Urban Explorer', 'Nature & Adventure', 'Exploration & Navigation']);
+const LOCATION_CATEGORIES = new Set(['Urban Explorer', 'Nature & Adventure', 'Exploration & Navigation', 'Local Gems']);
 
 function buildRadiusGuidance(maxDistance) {
   if (maxDistance <= 5)   return 'Stay strictly within the immediate area — same suburb or directly adjacent streets.';
@@ -16,7 +16,14 @@ function buildCategoryRule(targetCategory) {
       return (
         `URBAN EXPLORER RULE: Name the actual venue or spot — its real name and suburb. No generic 'find a spot' ` +
         `instructions. The crew must be able to Google the name and drive there. If you cannot name a real, ` +
-        `specific place, pick a different quest idea.`
+        `specific place, pick a different quest idea. ` +
+        `\nCRITICAL GEM BIAS: Strongly prefer overlooked neighbourhood institutions — the butchery that's been ` +
+        `there since 1979, the Indian takeaway operating out of an industrial unit, the old-school Portuguese café ` +
+        `with a handwritten specials board, the corner spaza that does better gatsby rolls than anywhere formal, ` +
+        `the suburban lunch spot that seats 12 and takes cash only. ` +
+        `HARD DISCARD: no malls, no franchise or chain venues, no rooftop bars with an Instagram presence, no ` +
+        `'hidden gem' spots that appear on every foodie blog, no TripAdvisor top-10, no venue with a QR code menu ` +
+        `and exposed brick. The test: would a tourist find this in 30 seconds? If yes, pick something else.`
       );
     case 'In-Home/Chill':
       return (
@@ -53,7 +60,11 @@ function buildCategoryRule(targetCategory) {
         `EXPLORATION & NAVIGATION RULE: Name the actual destination — real suburb, town, road, or landmark. ` +
         `The quest must involve deliberate discovery: somewhere genuinely new or overlooked, a hidden ` +
         `architectural blind spot, or significant ground covered. Strongly prefer quests that reduce GPS ` +
-        `reliance — road signs only, a paper map, or navigating by landmarks.`
+        `reliance — road signs only, a paper map, or navigating by landmarks. ` +
+        `\nGEM BIAS: Aim for the kinds of places locals know but never think to show visitors — a forgotten ` +
+        `industrial suburb with interesting decay, a dorpie with a single great roadside stop, a specific side ` +
+        `street with old-school signage, a reservoir or smallholding edge that most people drive past. ` +
+        `Avoid well-known landmarks, tourist sites, and any destination that would appear in a travel guide.`
       );
     case 'Social Experiments':
       return (
@@ -79,12 +90,38 @@ function buildCategoryRule(targetCategory) {
         `observe a single pattern, count a specific behaviour, sit without your phone. No physical challenge — ` +
         `this is entirely mental. Define exactly what counts as completing it.`
       );
+    case 'Local Gems':
+      return (
+        `LOCAL GEMS RULE: Name the actual spot — its real name and suburb or area. This category exists ` +
+        `solely to surface what most people never find on their own. Quest types to draw from: ` +
+        `a restaurant, café, or takeaway that runs entirely on regulars with no website or social presence; ` +
+        `a sunset or sunrise viewpoint that only people who grew up nearby know about; ` +
+        `a neighbourhood institution (butchery, deli, bakery, bottle store) that has been in the same ` +
+        `spot for 10+ years and thrives on word of mouth; a hidden greenspace, koppie, dam edge, or ` +
+        `open veld pocket that locals use but no one formally maps; a street, alley, or suburb corner ` +
+        `with unexpected character that most people drive past without stopping. ` +
+        `\nGENUINELY OBSCURE ONLY: Prefer cash-only, no website, no Instagram. Hard discard: anything ` +
+        `on TripAdvisor's top results, any spot featured in a food blog or magazine, any chain or ` +
+        `franchise, any venue a tourist would find in 30 seconds of searching. ` +
+        `\nFALLBACK — if you cannot confidently name a specific obscure place: frame the quest as a ` +
+        `neighbourhood hunt instead. Describe exactly what type of place to look for, which suburb or ` +
+        `area is most likely to have it, and what signs to look for (faded signage, hand-painted boards, ` +
+        `regulars-only parking lot, no menu outside). The hunt itself becomes the quest.`
+      );
     default:
       return '';
   }
 }
 
-function buildSystemPrompt(location) {
+const GROUP_SIZE_META = {
+  solo:   { label: 'a solo person', audience: 'Solo. Design this specifically for one person acting alone — no reliance on a partner or group dynamic.' },
+  small:  { label: '2–4 people',    audience: 'A small group of 2–4 mates. Think tight crew energy — easy to coordinate, room for banter, everyone can be involved.' },
+  medium: { label: '5–10 people',   audience: 'A medium group of 5–10 people. Scale activities so everyone stays engaged — avoid anything that leaves half the group watching.' },
+  large:  { label: '10+ people',    audience: 'A large group of 10 or more people. Pick activities that work at scale — competitive formats, team splits, or spectator-friendly challenges work best.' }
+};
+
+function buildSystemPrompt(location, groupSize) {
+  const gm = GROUP_SIZE_META[groupSize] || GROUP_SIZE_META['solo'];
   return (
     `You generate side-quests for people in ${location}. ` +
     `The goal is simple: turn an ordinary day into something worth remembering — without needing a plan, a budget, or any effort to start. ` +
@@ -92,9 +129,21 @@ function buildSystemPrompt(location) {
     `a joke lands perfectly, or everyone realises they're equally terrible at something. ` +
     `A slow walk with the right company beats an organised outing every time. ` +
     `Quests should be so easy to start that inertia is the only real obstacle. ` +
-    `\n\nAUDIENCE: Small groups of mates (2–5 people) or a solo person looking to break routine. Ages 18–35. ` +
+    `\n\nGROUP SIZE: ${gm.audience} ` +
+    `\n\nAUDIENCE: Ages 18–35. ` +
     `Think 'what would make a good story at the next braai' energy — relatable, slightly dumb, occasionally brilliant. ` +
     `Low stakes, high chance of laughing at yourselves. Not everything needs to be an event. ` +
+    `\n\nLOCAL GEMS DOCTRINE: When any quest involves a real place — a restaurant, café, takeaway, bar, shop, ` +
+    `or hangout — the default is the spot locals quietly guard. Think: the bunny chow place with no proper ` +
+    `signage that's been feeding the neighbourhood since 1987; the Indian takeaway in an industrial park that ` +
+    `seats eight and takes cash only; the garage forecourt café with better boerie rolls than anything on the ` +
+    `high street; the Portuguese family restaurant that hasn't changed the menu in 20 years; the old-school ` +
+    `Chinese place in a strip mall where the regulars all order off a different menu on the wall. ` +
+    `\nACTIVE DISCARD LIST for place recommendations: any chain or franchise; any venue on TripAdvisor's top 10 ` +
+    `for that city; any restaurant that's been featured in a mainstream food publication or lifestyle blog; ` +
+    `any venue with a QR code menu, exposed brick, and Edison bulbs; food markets with entrance fees; ` +
+    `rooftop bars with a social media presence; anything inside a shopping mall. ` +
+    `The test: would a tourist or a local food blogger find this in 30 seconds? If yes, pick something else. ` +
     `\n\nNON-LOCATION QUESTS: For categories that don't require a specific place — skills, physical challenges, ` +
     `social experiments, creative challenges, comfort zone, chill at home — draw inspiration from Instagram ` +
     `challenges, TikTok trends, viral skill videos, sleepover games evolved for adults, and the kind of idea ` +
@@ -104,7 +153,7 @@ function buildSystemPrompt(location) {
     `anything requiring a permit or prior permission, anything illegal, visiting art galleries, art exhibitions, ` +
     `art markets, street art tours, graffiti spotting, mural walks, or any passive consumption of art. ` +
     `Never suggest karaoke, karaoke bars, music mashup nights, open-mic singing, or any activity built around ` +
-    `singing along to recorded music. ` +
+    `singing along to recorded music. No chain restaurants. No shopping malls. No tourist-facing venues. ` +
     `\n\nSTREET SMARTS: No corporate safety warnings. For location-based quests, weave genuine local awareness ` +
     `for ${location} into the narrative naturally. ` +
     `\n\nSTYLE: No predictable openers ('Head over to...', 'Visit...', 'Check out...'). ` +
@@ -142,8 +191,11 @@ function buildPrompt(targetCategory, maxDistance, recent, location) {
     `Think at right angles to all of them. ` +
     `\n\nVARIETY MANDATE: Before committing to any idea, mentally draft 5–7 completely different quest concepts. ` +
     `Only then pick the most interesting and unexpected one. Discard immediately: bar crawls, escape rooms, ` +
-    `trivia nights, 'find the best X in the city', single restaurant visits, generic photo lists without a ` +
-    `specific visual constraint, anything that reads like a listicle entry. ` +
+    `trivia nights, 'find the best X in the city', single well-known restaurant visits, generic photo lists ` +
+    `without a specific visual constraint, anything that reads like a listicle entry, any venue that would ` +
+    `appear in a city food guide or travel blog, any activity centred on a chain or franchise. ` +
+    `For location-based food or drink quests: skip the obvious and go deep local — the older and more ` +
+    `neighbourhood-specific, the better. ` +
     `\n\nCRITICAL CONSTRAINTS: The quest must be doable right now, with no advance planning and no reservations. ` +
     (categoryRule ? `\n\n${categoryRule} ` : '') +
     timingSection +
@@ -160,7 +212,7 @@ function buildPrompt(targetCategory, maxDistance, recent, location) {
   );
 }
 
-async function generateQuest(categoryPool) {
+async function generateQuest(categoryPool, groupSize) {
   hideError();
   if (!state.apiKey || !state.apiKey.trim()) {
     showError('No API key set. Open Settings (gear icon) and add your Groq key.');
@@ -212,7 +264,7 @@ async function generateQuest(categoryPool) {
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
         messages: [
-          { role: 'system', content: buildSystemPrompt(location) },
+          { role: 'system', content: buildSystemPrompt(location, groupSize || 'solo') },
           { role: 'user', content: buildPrompt(targetCategory, maxDistance, recent, location) }
         ],
         response_format: { type: 'json_object' },
