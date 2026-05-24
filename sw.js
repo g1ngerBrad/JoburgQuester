@@ -1,4 +1,4 @@
-const CACHE = 'sq-v10';
+const CACHE = 'sq-v14';
 
 const PRECACHE = [
   './pages/home.html',
