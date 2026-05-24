@@ -62,10 +62,16 @@ document.getElementById('signUpBtn').onclick = async () => {
   btn.disabled = true; btn.textContent = 'Creating account…';
 
   try {
-    _settingsUser = await authSignUp(email, password, username, name);
-    okEl.textContent = 'Account created! Check your email to confirm, then sign in.';
-    okEl.classList.remove('hidden');
-    _renderLoggedIn();
+    const result = await authSignUp(email, password, username, name);
+    if (result.pendingConfirmation) {
+      okEl.textContent = 'Account created! Check your email to confirm, then sign in.';
+      okEl.classList.remove('hidden');
+    } else {
+      _settingsUser = result;
+      okEl.textContent = 'Account created!';
+      okEl.classList.remove('hidden');
+      _renderLoggedIn();
+    }
   } catch (err) {
     errEl.textContent = err.message || 'Sign up failed.';
     errEl.classList.remove('hidden');
