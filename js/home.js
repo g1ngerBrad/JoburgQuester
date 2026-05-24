@@ -1,4 +1,6 @@
-document.getElementById('generateBtn').onclick = generateQuest;
+let selectedCategories = []; // empty = random from all
+
+document.getElementById('generateBtn').onclick = () => generateQuest(selectedCategories.slice());
 
 document.getElementById('settingsBtn').onclick = () => {
   document.getElementById('apiKeyInput').value = state.apiKey || '';
@@ -28,6 +30,37 @@ document.getElementById('settingsModal').addEventListener('click', (e) => {
     document.getElementById('locationSuggestions').classList.add('hidden');
   }
 });
+
+// --- Category checklist grid ---
+
+function _renderCategoryGrid() {
+  const grid = document.getElementById('catGrid');
+  if (!grid) return;
+
+  grid.innerHTML = CATEGORIES.map(cat => {
+    const m = CATEGORY_META[cat];
+    return `<button class="cat-check-btn" data-cat="${escapeHtml(cat)}">${m.emoji} ${escapeHtml(m.label || cat)}</button>`;
+  }).join('');
+
+  grid.querySelectorAll('.cat-check-btn').forEach(btn => {
+    btn.onclick = () => {
+      const cat = btn.dataset.cat;
+      const idx = selectedCategories.indexOf(cat);
+      if (idx === -1) {
+        selectedCategories.push(cat);
+        const m = CATEGORY_META[cat];
+        btn.style.background = m.bg;
+        btn.style.borderColor = m.color;
+        btn.style.color = m.color;
+      } else {
+        selectedCategories.splice(idx, 1);
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }
+    };
+  });
+}
 
 // --- Mapbox location autocomplete ---
 let _locDebounce = null;
@@ -84,6 +117,7 @@ function _updateCityTagline() {
 
 renderQuestCard();
 _updateCityTagline();
+_renderCategoryGrid();
 
 const _splash = document.getElementById('splash');
 if (_splash) { _splash.classList.add('out'); setTimeout(() => _splash.remove(), 400); }
