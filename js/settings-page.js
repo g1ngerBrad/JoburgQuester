@@ -376,5 +376,7 @@ else {
   });
 }
 
+document.getElementById('backBtn')?.addEventListener('click', () => history.back());
+
 const _splash = document.getElementById('splash');
 if (_splash) { _splash.classList.add('out'); setTimeout(() => _splash.remove(), 400); }

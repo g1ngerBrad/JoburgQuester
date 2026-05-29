@@ -1,4 +1,4 @@
-const CACHE = 'sq-v20';
+const CACHE = 'sq-v22';
 
 const PRECACHE = [
   './pages/home.html',
@@ -9,6 +9,9 @@ const PRECACHE = [
   './styles/globals.css',
   './styles/index.css',
   './styles/log.css',
+  './styles/gems.css',
+  './styles/settings.css',
+  './styles/social.css',
   './js/env.js',
   './js/config.js',
   './js/state.js',
