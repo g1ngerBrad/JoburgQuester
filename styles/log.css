@@ -28,3 +28,20 @@
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
+
+/* Reset-weightings icon (tint white, dimmed) */
+.reset-icon { filter: brightness(0) invert(1); opacity: 0.6; }
+
+/* Gradient scrim behind the bottom actions — fades scrolling list content
+   into the page background and fills the gap down to the screen edge. */
+.log-bottom-actions::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -40px;
+  bottom: -40px;
+  background: linear-gradient(to top, #0f172a 45%, rgba(15, 23, 42, 0) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
