@@ -80,9 +80,12 @@ js/
 scripts/
   inject-env.js   — Vercel build script: writes MAPBOX_TOKEN into js/env.js
 styles/
-  globals.css     — Shared styles, animations, buttons
+  globals.css     — Shared styles, animations, buttons, splash screen
   index.css       — Home page (ring animations)
-  log.css         — Log page (custom checkbox)
+  log.css         — Log page (custom checkbox, reset icon)
+  gems.css        — Gems page (add bar, cyan button)
+  settings.css    — Settings page (section cards, avatar, auth tabs)
+  social.css      — Social page (comment input, share FAB, pink buttons)
 vercel.json       — Vercel build configuration
 manifest.json     — PWA manifest
 ```

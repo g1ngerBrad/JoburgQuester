@@ -30,9 +30,12 @@ Mobile-first PWA. Generates AI side-quests for any city via the Groq API. No loc
 | `pages/gems.html` | Local Gems page (left nav tab) — AI gem generation + Mine/Found tabs |
 | `pages/social.html` | Social feed + share/comments (right nav tab) |
 | `pages/settings.html` | Settings page — profile, friends, app settings |
-| `styles/globals.css` | Shared styles, animations, bottom navbar (`.bottom-nav`, `.nav-tab`, `.nav-center`, `.nav-generate-btn`, `.page-tab-bar`, `.page-tab`) |
+| `styles/globals.css` | Shared styles, animations, bottom navbar (`.bottom-nav`, `.nav-tab`, `.nav-center`, `.nav-generate-btn`, `.page-tab-bar`, `.page-tab`), splash screen (`#splash`, `.sdot`, `.splash-dots`, accent overrides `.splash-cyan`/`.splash-pink`) |
 | `styles/index.css` | Home-page ring animations |
-| `styles/log.css` | Log-page custom checkbox |
+| `styles/log.css` | Log-page custom checkbox, `.reset-icon` |
+| `styles/gems.css` | Gems-page styles — `.gem-add-bar`, cyan `.btn-gem` |
+| `styles/settings.css` | Settings-page styles — `.section-card`, `.section-title`, `.avatar-ring`, `.auth-tab-bar`, `.lowercase-input` |
+| `styles/social.css` | Social-page styles — `.comment-input`, `.share-fab`, pink `.btn-pink`, `.comment-send-btn` |
 | `vercel.json` | Vercel build config (`buildCommand`, `outputDirectory`) |
 
 ## Navigation
@@ -120,11 +123,11 @@ Do this as part of the same task, not as a separate step.
 
 ## Service Worker
 
-`sw.js` is registered from `home.js`. Cache version: `sq-v17`. Supabase API calls are excluded from caching in addition to Groq.
+`sw.js` is registered from `home.js`. Cache version: `sq-v21`. Supabase API calls are excluded from caching in addition to Groq.
 
 **When modifying any cached file** (HTML, CSS, JS), bump `CACHE` in `sw.js`:
 ```js
-const CACHE = 'sq-v17'; // increment each time cached files change
+const CACHE = 'sq-v21'; // increment each time cached files change
 ```
 
 ## Do Not
